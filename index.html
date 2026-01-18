@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE INTERNSHIP | Student Operated Collective</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;500;800&family=Shippori+Mincho:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Zen Kaku Gothic New"', 'sans-serif'],
+                        serif: ['"Shippori Mincho"', 'serif'],
+                        en: ['"Manrope"', 'sans-serif'],
+                    },
+                    colors: {
+                        black: '#111111',
+                        dark: '#1c1c1c',
+                        gray: '#888888',
+                        light: '#fafafa',
+                        white: '#ffffff',
+                        accent: '#4f46e5',
+                    },
+                    letterSpacing: {
+                        tighter: '-0.05em',
+                        widest: '0.25em',
+                    },
+                    lineHeight: {
+                        loose: '2.2',
+                    },
+                    animation: {
+                        'marquee': 'marquee 30s linear infinite',
+                        'fade-in': 'fadeIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-100%)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: 0, transform: 'translateY(30px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .noise-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .reveal-text {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-text.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .img-editorial {
+            background-color: #f3f4f6;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 500;
+            color: #9ca3af;
+            letter-spacing: 0.1em;
+            transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .img-editorial:hover {
+            transform: scale(0.98);
+        }
+        
+        .v-line {
+            width: 1px;
+            height: 100px;
+            background-color: #000;
+            margin: 0 auto;
+        }
+
+        .project-detail {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .project-detail.open {
+            max-height: 1000px;
+        }
+
+        @media (min-width: 1024px) {
+            body { cursor: default; }
+            a, button { cursor: pointer; }
+        }
+    </style>
+</head>
+<body class="bg-white text-black font-sans antialiased selection:bg-black selection:text-white">
+
+    <div class="noise-overlay"></div>
+
+    <script>
+        const ORG_NAME = ""; 
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.org-name-insert').forEach(el => {
+                el.textContent = ORG_NAME;
+            });
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: "0px 0px -100px 0px" });
+
+            document.querySelectorAll('.reveal-text').forEach(el => observer.observe(el));
+        });
+
+        function toggleProject(id) {
+            const detail = document.getElementById(id);
+            const btn = document.getElementById('btn-' + id);
+            detail.classList.toggle('open');
+            btn.textContent = detail.classList.contains('open') ? 'View less' : 'View more';
+        }
+    </script>
+
+    <!-- Navigation -->
+    <header class="fixed top-0 w-full z-50 px-6 py-6 flex justify-between items-start mix-blend-difference text-white">
+        <a href="#" class="text-lg font-en font-bold tracking-tighter org-name-insert leading-none"></a>
+        
+        <nav class="hidden md:flex flex-col items-end gap-2 text-xs font-en font-medium tracking-widest uppercase">
+            <a href="#manifesto" class="hover:opacity-50 transition">Manifesto</a>
+            <a href="#projects" class="hover:opacity-50 transition">Projects</a>
+            <a href="#team" class="hover:opacity-50 transition">Members</a>
+            <a href="#contact" class="hover:opacity-50 transition">FAQ</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-20 px-6 overflow-hidden">
+        <div class="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gray-50 rounded-full blur-3xl opacity-60 -z-10"></div>
+        
+        <div class="container mx-auto max-w-7xl relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
+                <div class="lg:col-span-7 animate-fade-in">
+                    <p class="font-en text-xs font-bold tracking-widest text-gray-400 mb-8 uppercase">For Students, By Students.</p>
+                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[1.1] tracking-tighter mb-10">
+                        企業じゃない。<br>
+                        <span class="italic text-gray-400">チーム</span>だ。
+                    </h1>
+                    <div class="h-px w-20 bg-black mb-10"></div>
+                    <p class="text-base text-gray-600 font-medium leading-loose max-w-lg">
+                        1〜2回生中心。現役学生が運営する、<br>
+                        学生生活も両立できて相談しやすい、<br>
+                        どこよりも安心な長期インターンシップ・コミュニティ。
+                    </p>
+                </div>
+
+                <div class="lg:col-span-5 relative mt-8 lg:mt-0 animate-fade-in" style="animation-delay: 0.3s;">
+                    <div class="img-editorial aspect-[4/5] w-full shadow-2xl grayscale hover:grayscale-0 transition duration-1000">
+                        <span class="z-10">HERO VISUAL</span>
+                        <p class="absolute bottom-4 text-[10px] text-gray-500">共に学び、成長する<br>学生メンバーたちの日常</p>
+                    </div>
+                    <div class="absolute -top-10 -right-10 font-en text-9xl font-bold text-transparent stroke-text opacity-5 pointer-events-none" style="-webkit-text-stroke: 1px #000;">
+                        01
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-10 left-6 flex items-center gap-4">
+            <div class="h-px w-12 bg-black"></div>
+            <span class="text-xs font-en font-bold tracking-widest uppercase">Scroll</span>
+        </div>
+    </section>
+
+    <!-- Marquee -->
+    <div class="border-y border-black py-4 overflow-hidden bg-black text-white">
+        <div class="whitespace-nowrap animate-marquee flex gap-20 font-en text-sm font-bold tracking-widest uppercase">
+            <span>Student Operated Collective</span>
+            <span>Real Experience</span>
+            <span>Growth & Safety</span>
+            <span>Trust & Support</span>
+            <span>Student Operated Collective</span>
+            <span>Real Experience</span>
+            <span>Growth & Safety</span>
+            <span>Trust & Support</span>
+        </div>
+    </div>
+
+    <!-- Manifesto -->
+    <section id="manifesto" class="py-40 px-6 bg-light relative">
+        <div class="container mx-auto max-w-6xl">
+            <div class="grid lg:grid-cols-2 gap-20 items-center reveal-text">
+                <div class="relative order-2 lg:order-1">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="img-editorial aspect-[3/4] bg-gray-200 mt-12">STUDY</div>
+                        <div class="img-editorial aspect-[3/4] bg-gray-300">ACTION</div>
+                    </div>
+                    <p class="text-[10px] text-gray-400 mt-4 font-en tracking-widest uppercase text-center">Trust in Each Other</p>
+                </div>
+
+                <div class="order-1 lg:order-2">
+                    <span class="font-en text-xs font-bold tracking-widest text-gray-400 uppercase mb-6 block">Our Manifesto</span>
+                    <h2 class="text-3xl md:text-5xl font-serif font-medium leading-tight mb-12">
+                        才能が、環境に<br>
+                        潰されないために。
+                    </h2>
+                    
+                    <div class="space-y-10 text-gray-700 leading-loose font-serif text-lg">
+                        <p>
+                            ここ数年、才能ある同世代が、自分に合わない環境や不当な扱いに消耗していく姿を間近で見ることがありました。
+                        </p>
+                        <p>
+                            「学生だから」と切り捨てられるのではなく、誰もが伸びのびと挑戦でき、失敗しても笑って支え合える場所。そんな、一緒に頑張れる仲間を増やすために、私たちはこの場所を作りました。
+                        </p>
+                        <div class="pl-8 border-l border-black py-2">
+                            <p class="text-black font-medium">
+                                怪しい勧誘や理不尽なルールはありません。<br>
+                                どこよりも安心できる土台の上で、自分のペースで。<br>
+                                誰もが主役になれる、新しい「学び」の形を追求します。
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-16 text-right">
+                        <p class="text-[10px] font-en font-bold uppercase tracking-widest text-gray-400">Founders</p>
+                        <p class="font-serif text-sm mt-2 tracking-widest">新谷 宗太郎 / 森平 心</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why We Are Different -->
+    <section class="py-40 px-6 bg-white">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-32 reveal-text">
+                <div class="v-line mb-6"></div>
+                <h2 class="text-xl font-en font-bold tracking-widest uppercase">Safety & Trust</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-24">
+                <div class="group reveal-text">
+                    <div class="mb-8 overflow-hidden h-48 img-editorial bg-gray-50">
+                        <i class="fa-regular fa-comments text-3xl opacity-30"></i>
+                    </div>
+                    <span class="font-en text-4xl font-bold text-gray-200 group-hover:text-black transition duration-500 block mb-6">01</span>
+                    <h3 class="text-lg font-bold font-serif mb-6 tracking-wide">代表が直接サポート。</h3>
+                    <p class="text-sm text-gray-600 leading-loose">
+                        運営は現役の理系学生。学業やテストの大変さを熟知しています。悩みがあれば代表の新谷がいつでも親身に相談に乗ります。
+                    </p>
+                </div>
+
+                <div class="group reveal-text" style="transition-delay: 0.1s;">
+                    <div class="mb-8 overflow-hidden h-48 img-editorial bg-gray-50">
+                        <i class="fa-regular fa-calendar-check text-3xl opacity-30"></i>
+                    </div>
+                    <span class="font-en text-4xl font-bold text-gray-200 group-hover:text-black transition duration-500 block mb-6">02</span>
+                    <h3 class="text-lg font-bold font-serif mb-6 tracking-wide">両立を前提とした設計。</h3>
+                    <p class="text-sm text-gray-600 leading-loose">
+                        最低勤務日数の固定はなし。無理な勧誘も行いません。学生生活、部活、サークルを尊重した上で、将来に活きるスキルを。
+                    </p>
+                </div>
+
+                <div class="group reveal-text" style="transition-delay: 0.2s;">
+                    <div class="mb-8 overflow-hidden h-48 img-editorial bg-gray-50">
+                        <i class="fa-solid fa-graduation-cap text-3xl opacity-30"></i>
+                    </div>
+                    <span class="font-en text-4xl font-bold text-gray-200 group-hover:text-black transition duration-500 block mb-6">03</span>
+                    <h3 class="text-lg font-bold font-serif mb-6 tracking-wide">プロ監修の本格教育。</h3>
+                    <p class="text-sm text-gray-600 leading-loose">
+                        提携企業のプロによる監修により、精神面だけでなく実務スキルも着実に向上。就職活動で自信を持って語れる経験が得られます。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="py-40 px-6 bg-black text-white relative">
+        <div class="container mx-auto max-w-6xl">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-32 border-b border-gray-800 pb-8 reveal-text">
+                <h2 class="text-5xl md:text-7xl font-en font-bold tracking-tighter">PROJECTS</h2>
+                <p class="text-xs font-en uppercase tracking-widest text-gray-500 mt-4 md:mt-0">Experience Program</p>
+            </div>
+
+            <div class="space-y-40">
+                <!-- Project 1 -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-20 items-start reveal-text">
+                    <div class="md:col-span-6">
+                        <div class="img-editorial aspect-video w-full bg-gray-900 border border-gray-800 grayscale hover:grayscale-0 transition duration-700">
+                            <span class="opacity-50 tracking-widest">OFFICE WORK</span>
+                        </div>
+                    </div>
+                    <div class="md:col-span-6">
+                        <div class="mb-6">
+                            <span class="px-4 py-2 border border-white/20 rounded-full text-[10px] font-en uppercase tracking-widest">Business</span>
+                        </div>
+                        <h3 class="text-3xl font-serif font-medium mb-6">法人向け営業 (toB)</h3>
+                        <p class="text-sm text-gray-400 leading-loose mb-8 max-w-md">
+                            企業の新規開拓を行う実践的なビジネス体験。名刺交換から提案資料の作成まで、社会人の基礎を早期に習得。
+                        </p>
+                        <button onclick="toggleProject('detail-1')" id="btn-detail-1" class="text-xs font-en uppercase tracking-widest border border-white/30 px-6 py-3 hover:bg-white hover:text-black transition duration-300">View more</button>
+                        
+                        <div id="detail-1" class="project-detail mt-8 text-xs text-gray-400 space-y-4 leading-loose border-t border-gray-800 pt-6">
+                            <p><strong class="text-white block mb-1">【研修フロー】</strong>オンラインでの基礎研修、ロールプレイングを重ねてから実地へ。学生運営が伴走します。</p>
+                            <p><strong class="text-white block mb-1">【稼働イメージ】</strong>平日夕方以降や土日など。自身の目標に合わせて設計可能です。最初の2週間は信頼関係の構築を重視します。</p>
+                            <p><strong class="text-white block mb-1">【サポート】</strong>実務スキルは提携プロが監修。就活時のES添削や面接対策も継続的に支援します。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-20 items-start reveal-text">
+                    <div class="md:col-span-6 md:order-2">
+                        <div class="img-editorial aspect-video w-full bg-gray-900 border border-gray-800 grayscale hover:grayscale-0 transition duration-700">
+                            <span class="opacity-50 tracking-widest">EVENT BOOTH</span>
+                        </div>
+                    </div>
+                    <div class="md:col-span-6 md:order-1 text-left md:text-right">
+                        <div class="mb-6 flex justify-start md:justify-end">
+                            <span class="px-4 py-2 border border-white/20 rounded-full text-[10px] font-en uppercase tracking-widest">Team Work</span>
+                        </div>
+                        <h3 class="text-3xl font-serif font-medium mb-6">催事・イベント</h3>
+                        <p class="text-sm text-gray-400 leading-loose mb-8 ml-auto max-w-md">
+                            チームでわいわい動きながら行うPR活動。初心者でも馴染みやすく、コミュニケーションの楽しさを実感。
+                        </p>
+                        <button onclick="toggleProject('detail-2')" id="btn-detail-2" class="text-xs font-en uppercase tracking-widest border border-white/30 px-6 py-3 hover:bg-white hover:text-black transition duration-300">View more</button>
+                        
+                        <div id="detail-2" class="project-detail mt-8 text-xs text-gray-400 space-y-4 leading-loose border-t border-gray-800 pt-6 text-left md:text-right">
+                            <p><strong class="text-white block mb-1">【研修フロー】</strong>先輩メンバーと一緒に現場での流れを確認。まずは楽しむことからスタートします。</p>
+                            <p><strong class="text-white block mb-1">【稼働イメージ】</strong>土日メイン。シフトの固定はなく、試験期間は完全にお休みすることも可能です。</p>
+                            <p><strong class="text-white block mb-1">【サポート】</strong>メンタル面や学業とのバランスは代表の新谷が直接サポート。報酬の詳細は面談にて共有いたします。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-20 items-start reveal-text">
+                    <div class="md:col-span-6">
+                        <div class="img-editorial aspect-video w-full bg-gray-900 border border-gray-800 grayscale hover:grayscale-0 transition duration-700">
+                            <span class="opacity-50 tracking-widest">FIELD SALES</span>
+                        </div>
+                    </div>
+                    <div class="md:col-span-6">
+                        <div class="mb-6">
+                            <span class="px-4 py-2 border border-white/20 rounded-full text-[10px] font-en uppercase tracking-widest">Growth</span>
+                        </div>
+                        <h3 class="text-3xl font-serif font-medium mb-6">訪問販売</h3>
+                        <p class="text-sm text-gray-400 leading-loose mb-8 max-w-md">
+                            個人宅への訪問を通じて、圧倒的な「度胸」と「自信」を。自分を変えたい人に最適な成長特化型。
+                        </p>
+                        <button onclick="toggleProject('detail-3')" id="btn-detail-3" class="text-xs font-en uppercase tracking-widest border border-white/30 px-6 py-3 hover:bg-white hover:text-black transition duration-300">View more</button>
+                        
+                        <div id="detail-3" class="project-detail mt-8 text-xs text-gray-400 space-y-4 leading-loose border-t border-gray-800 pt-6">
+                            <p><strong class="text-white block mb-1">【研修フロー】</strong>提携企業のプロによる徹底研修。同行を通じて「成功する伝え方」を体感します。</p>
+                            <p><strong class="text-white block mb-1">【稼働イメージ】</strong>週末集中型など。最初の2週間は適性を見ながらコミュニケーション重視で進めます。</p>
+                            <p><strong class="text-white block mb-1">【サポート】</strong>就活で語れるエピソード作りを代表とプロが共に支援。成果に応じたインセンティブ制度があります。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team -->
+    <section id="team" class="py-40 px-6 bg-light">
+        <div class="container mx-auto max-w-6xl">
+            <div class="mb-24 flex items-baseline justify-between reveal-text">
+                <h2 class="text-4xl md:text-5xl font-en font-bold tracking-tighter">THE TEAM</h2>
+                <p class="text-xs font-serif text-gray-500 tracking-wide">運営メンバー</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-16 lg:gap-24">
+                <div class="group reveal-text">
+                    <div class="img-editorial aspect-[3/4] w-full bg-gray-200 grayscale group-hover:grayscale-0 transition duration-700 mb-8">PORTRAIT</div>
+                    <div class="flex justify-between items-start border-t border-gray-300 pt-6">
+                        <div>
+                            <h3 class="text-xl font-medium font-serif tracking-wide">新谷 宗太郎</h3>
+                            <p class="text-xs text-gray-500 mt-2 tracking-widest font-en">2005.05.17 / Representative</p>
+                        </div>
+                        <span class="text-[10px] font-en uppercase tracking-widest border border-black px-3 py-1">Student</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-6 leading-loose font-serif max-w-sm">
+                        現役の理系学生。学業と活動の両立を自ら体現しながら、メンバー一人ひとりの「安心できる挑戦」をサポートしています。
+                    </p>
+                </div>
+
+                <div class="group reveal-text" style="transition-delay: 0.1s;">
+                    <div class="img-editorial aspect-[3/4] w-full bg-gray-200 grayscale group-hover:grayscale-0 transition duration-700 mb-8">PORTRAIT</div>
+                    <div class="flex justify-between items-start border-t border-gray-300 pt-6">
+                        <div>
+                            <h3 class="text-xl font-medium font-serif tracking-wide">森平 心</h3>
+                            <p class="text-xs text-gray-500 mt-2 tracking-widest font-en">2005.04.24 / Organizer</p>
+                        </div>
+                        <span class="text-[10px] font-en uppercase tracking-widest border border-black px-3 py-1">Student</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-6 leading-loose font-serif max-w-sm">
+                        野球で培ったエネルギーを、誰もが輝ける環境づくりに注いでいます。メンバー同士の繋がりを大切にする仕組みを作っています。
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-32 pt-12 border-t border-gray-300 text-center reveal-text">
+                <p class="text-[10px] font-en font-bold uppercase tracking-[0.2em] text-gray-400 mb-6">Supported by Professionals</p>
+                <div class="flex flex-col items-center">
+                    <h3 class="text-base font-medium font-serif mb-2">株式会社ブルーブ 様</h3>
+                    <p class="text-xs text-gray-500 leading-loose">
+                        教育研修・実務フィードバック協力<br>
+                        (原田さん・手塚さん・横山さん・伊藤さん)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ & Info -->
+    <section id="contact" class="py-40 px-6 bg-white">
+        <div class="container mx-auto max-w-3xl">
+            <h2 class="text-4xl font-en font-bold tracking-tighter mb-24 text-center reveal-text">Q&A / INFO</h2>
+
+            <div class="space-y-6 mb-32 reveal-text">
+                <div class="border-t border-gray-200 py-8 group hover:bg-light transition duration-500">
+                    <h3 class="font-bold text-sm mb-4 font-serif tracking-wide">Q. 学業との両立は本当にできますか？</h3>
+                    <p class="text-xs text-gray-500 leading-loose">もちろんです。運営も学生ですので、テスト期間の重要性は十分に理解しています。学期中は完全に活動を休止し、学業を最優先していただきます。</p>
+                </div>
+                <div class="border-t border-gray-200 py-8 group hover:bg-light transition duration-500">
+                    <h3 class="font-bold text-sm mb-4 font-serif tracking-wide">Q. 何か費用はかかりますか？</h3>
+                    <p class="text-xs text-gray-500 leading-loose">参加費などの費用は一切かかりません。むしろプロの研修を無料で受け、成果に応じた報酬を得ながら学ぶことができる場所です。</p>
+                </div>
+                <div class="border-t border-b border-gray-200 py-8 group hover:bg-light transition duration-500">
+                    <h3 class="font-bold text-sm mb-4 font-serif tracking-wide">Q. 相談したい場合はどうすればいいですか？</h3>
+                    <p class="text-xs text-gray-500 leading-loose">まずは概要を理解していただくための資料や相談窓口を用意しています。無理な勧誘や強要は一切ありませんのでご安心ください。</p>
+                </div>
+            </div>
+
+            <div class="text-center reveal-text">
+                <p class="font-serif text-lg mb-12 leading-loose">
+                    「自分にできるかな？」「怪しくないかな？」<br>
+                    そんな不安を解消するための情報を、随時更新しています。<br>
+                    <span class="text-gray-400 text-sm block mt-4">詳細は公式の問い合わせ窓口までお問い合わせください。</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-light py-16 px-6 border-t border-gray-200">
+        <div class="container mx-auto max-w-6xl flex flex-col md:flex-row justify-between items-end gap-8">
+            <div>
+                <div class="font-en font-bold text-2xl tracking-tighter mb-4 org-name-insert"></div>
+                <p class="text-[10px] font-en uppercase tracking-widest text-gray-400">Student Operated Collective</p>
+            </div>
+            <div class="text-[10px] font-en uppercase tracking-widest text-gray-400">
+                &copy; <span class="org-name-insert"></span> All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
