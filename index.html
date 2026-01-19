@@ -43,7 +43,6 @@
                     animation: {
                         'marquee': 'marquee 30s linear infinite',
                         'fade-in': 'fadeIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards',
-                        'float': 'float 6s ease-in-out infinite',
                     },
                     keyframes: {
                         marquee: {
@@ -53,10 +52,6 @@
                         fadeIn: {
                             '0%': { opacity: 0, transform: 'translateY(30px)' },
                             '100%': { opacity: 1, transform: 'translateY(0)' },
-                        },
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-20px)' },
                         }
                     }
                 }
@@ -68,14 +63,14 @@
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
-            z-index: 9999;
-            opacity: 0.04;
+            z-index: 999;
+            opacity: 0.03;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         .reveal-text {
             opacity: 0;
-            transform: translateY(40px);
+            transform: translateY(50px);
             transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .reveal-text.active {
@@ -84,7 +79,7 @@
         }
 
         .img-editorial {
-            background-color: #f0f0f0;
+            background-color: #f3f4f6;
             position: relative;
             overflow: hidden;
             display: flex;
@@ -93,19 +88,16 @@
             font-family: 'Manrope', sans-serif;
             font-weight: 500;
             color: #9ca3af;
-            letter-spacing: 0.15em;
-            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            letter-spacing: 0.1em;
+            transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .img-editorial img {
-            transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .img-editorial:hover img {
-            transform: scale(1.08);
+        .img-editorial:hover {
+            transform: scale(0.98);
         }
         
         .v-line {
             width: 1px;
-            height: 80px;
+            height: 100px;
             background-color: #000;
             margin: 0 auto;
         }
@@ -113,12 +105,17 @@
         .project-detail {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 1s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .project-detail.open {
-            max-height: 1500px;
+            max-height: 1000px;
         }
 
+        .contact-link-hover:hover {
+            opacity: 0.6;
+        }
+
+        /* メニューオーバーレイのアニメーション設定 */
         #menu-overlay {
             clip-path: circle(0% at 100% 0%);
             transition: clip-path 0.8s cubic-bezier(0.77, 0, 0.175, 1);
@@ -127,26 +124,13 @@
             clip-path: circle(150% at 100% 0%);
         }
 
-        /* ヒーロータイトルの斜体設定 */
-        .hero-italic {
-            display: inline-block;
-            font-style: italic;
-            transform: skewX(-5deg);
-        }
-
-        @media (max-width: 768px) {
-            .hero-title { font-size: 2.1rem; line-height: 1.3; }
-            .manifesto-text { font-size: 1rem; line-height: 2; }
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        @media (min-width: 1024px) {
+            body { cursor: default; }
+            a, button { cursor: pointer; }
         }
     </style>
 </head>
-<body class="bg-white text-black font-sans antialiased selection:bg-black selection:text-white overflow-x-hidden">
+<body class="bg-white text-black font-sans antialiased selection:bg-black selection:text-white">
 
     <div class="noise-overlay"></div>
 
@@ -175,6 +159,7 @@
             btn.textContent = detail.classList.contains('open') ? 'View less' : 'View more';
         }
 
+        // メニュー開閉用関数
         function toggleMenu() {
             const overlay = document.getElementById('menu-overlay');
             const icon = document.getElementById('menu-icon');
@@ -190,62 +175,72 @@
 
     <!-- Navigation -->
     <header class="fixed top-0 w-full z-[100] px-6 py-6 flex justify-between items-center mix-blend-difference text-white">
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-4">
             <img src="./assets/logo.png" alt="" class="h-6 w-auto object-contain" onerror="this.style.display='none';">
             <a href="#" class="text-lg font-en font-bold tracking-tighter org-name-insert leading-none"></a>
         </div>
-        <button onclick="toggleMenu()" class="w-12 h-12 flex items-center justify-center focus:outline-none bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300">
+        
+        <!-- 三本線ボタン -->
+        <button onclick="toggleMenu()" class="w-10 h-10 flex items-center justify-center focus:outline-none bg-white/10 rounded-full hover:bg-white/20 transition duration-300">
             <i id="menu-icon" class="fa-solid fa-bars text-xl"></i>
         </button>
     </header>
 
-    <!-- Menu Overlay -->
+    <!-- メニューオーバーレイ -->
     <div id="menu-overlay" class="fixed inset-0 bg-black z-[90] flex flex-col items-center justify-center pointer-events-none [&.open]:pointer-events-auto">
-        <nav class="flex flex-col items-center gap-8 text-white font-serif text-4xl md:text-6xl">
-            <a href="#manifesto" onclick="toggleMenu()" class="hover:italic hover:tracking-widest transition-all duration-500">Manifesto</a>
-            <a href="#projects" onclick="toggleMenu()" class="hover:italic hover:tracking-widest transition-all duration-500">Projects</a>
-            <a href="#team" onclick="toggleMenu()" class="hover:italic hover:tracking-widest transition-all duration-500">Members</a>
-            <a href="#contact" onclick="toggleMenu()" class="hover:italic hover:tracking-widest transition-all duration-500">Contact</a>
+        <nav class="flex flex-col items-center gap-8 text-white font-serif text-3xl md:text-5xl">
+            <a href="#manifesto" onclick="toggleMenu()" class="hover:italic transition-all duration-300">Manifesto</a>
+            <a href="#projects" onclick="toggleMenu()" class="hover:italic transition-all duration-300">Projects</a>
+            <a href="#team" onclick="toggleMenu()" class="hover:italic transition-all duration-300">Members</a>
+            <a href="#contact" onclick="toggleMenu()" class="hover:italic transition-all duration-300">Contact</a>
         </nav>
+        <div class="absolute bottom-10 text-white/40 text-[10px] font-en tracking-widest uppercase">
+            © <span class="org-name-insert"></span> Student Operated Collective
+        </div>
     </div>
 
     <!-- Hero Section -->
     <section class="relative min-h-screen flex items-center justify-center pt-20 px-6 overflow-hidden">
-        <div class="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gray-50 rounded-full blur-[120px] opacity-60 -z-10"></div>
+        <div class="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gray-50 rounded-full blur-3xl opacity-60 -z-10"></div>
         
         <div class="container mx-auto max-w-7xl relative z-10">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
                 <div class="lg:col-span-7 animate-fade-in">
-                    <p class="font-en text-xs font-bold tracking-[0.4em] text-gray-400 mb-10 uppercase">For Students, By Students.</p>
-                    <h1 class="hero-title text-4xl md:text-7xl lg:text-8xl font-serif font-medium leading-[1.2] md:leading-[1.1] tracking-tighter mb-10">
+                    <p class="font-en text-xs font-bold tracking-widest text-gray-400 mb-8 uppercase">For Students, By Students.</p>
+                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[1.1] tracking-tighter mb-10">
                         自分の人生。<br>
-                        <span class="hero-italic text-gray-400">選べる学生</span>に。
+                        <span class="italic text-gray-400">選べる学生</span>に。
                     </h1>
                     <div class="h-px w-20 bg-black mb-10"></div>
-                    <p class="text-base md:text-lg text-gray-600 font-medium leading-loose max-w-lg">
-                        1〜2回生限定。現役学生が運営する、<br class="hidden md:block">
-                        学生生活も両立でき、挑戦しやすい、<br class="hidden md:block">
+                    <p class="text-base text-gray-600 font-medium leading-loose max-w-lg">
+                        1〜2回生限定。現役学生が運営する、<br>
+                        学生生活も両立でき、挑戦しやすい、<br>
                         どこよりも安心な長期インターンシップ・コミュニティ。
                     </p>
                 </div>
 
                 <div class="lg:col-span-5 relative mt-8 lg:mt-0 animate-fade-in" style="animation-delay: 0.3s;">
-                    <div class="img-editorial aspect-[4/5] w-full shadow-2xl grayscale hover:grayscale-0 transition duration-1000 rounded-sm">
+                    <div class="img-editorial aspect-[4/5] w-full shadow-2xl grayscale hover:grayscale-0 transition duration-1000">
                         <img src="./assets/hero.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none';">
                         <span class="z-10">HERO VISUAL</span>
+                        <p class="absolute bottom-4 text-[10px] text-gray-500">共に学び、成長する<br>学生メンバーたちの日常</p>
+                    </div>
+                    <div class="absolute -top-10 -right-10 font-en text-9xl font-bold text-transparent stroke-text opacity-5 pointer-events-none" style="-webkit-text-stroke: 1px #000;">
+                        01
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="absolute bottom-10 left-6 flex items-center gap-4">
-            <div class="h-px w-12 bg-black animate-pulse"></div>
+            <div class="h-px w-12 bg-black"></div>
             <span class="text-xs font-en font-bold tracking-widest uppercase">Scroll</span>
         </div>
     </section>
 
     <!-- Marquee -->
-    <div class="border-y border-black/5 py-6 overflow-hidden bg-black text-white">
-        <div class="whitespace-nowrap animate-marquee flex gap-20 font-en text-xs md:text-sm font-bold tracking-[0.3em] uppercase">
+    <div class="border-y border-black py-4 overflow-hidden bg-black text-white">
+        <div class="whitespace-nowrap animate-marquee flex gap-20 font-en text-sm font-bold tracking-widest uppercase">
             <span>Student Operated Collective</span>
             <span>Real Experience</span>
             <span>Growth & Safety</span>
@@ -258,46 +253,54 @@
     </div>
 
     <!-- Manifesto -->
-    <section id="manifesto" class="py-24 md:py-48 px-6 bg-light relative">
+    <section id="manifesto" class="py-40 px-6 bg-light relative">
         <div class="container mx-auto max-w-6xl">
-            <div class="grid lg:grid-cols-2 gap-16 md:gap-24 items-center reveal-text">
+            <div class="grid lg:grid-cols-2 gap-20 items-center reveal-text">
                 <div class="relative order-2 lg:order-1">
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="img-editorial aspect-[3/4] bg-gray-200 mt-12 rounded-sm shadow-xl">
+                        <div class="img-editorial aspect-[3/4] bg-gray-200 mt-12">
                             <img src="./assets/mood-a.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none';">
                             STUDY
                         </div>
-                        <div class="img-editorial aspect-[3/4] bg-gray-300 rounded-sm shadow-xl animate-float">
+                        <div class="img-editorial aspect-[3/4] bg-gray-300">
                             <img src="./assets/mood-b.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none';">
                             ACTION
                         </div>
                     </div>
+                    <p class="text-[10px] text-gray-400 mt-4 font-en tracking-widest uppercase text-center">Trust in Each Other</p>
                 </div>
 
                 <div class="order-1 lg:order-2">
-                    <span class="font-en text-xs font-bold tracking-[0.3em] text-gray-400 uppercase mb-8 block">Our Manifesto</span>
+                    <span class="font-en text-xs font-bold tracking-widest text-gray-400 uppercase mb-6 block">Our Manifesto</span>
                     <h2 class="text-3xl md:text-5xl font-serif font-medium leading-tight mb-12">
-                        月40名話した<br class="hidden md:block">
+                        月40名話した<br>
                         先輩からの失敗をもとに。
                     </h2>
                     
-                    <div class="space-y-10 text-gray-700 leading-loose font-serif text-lg manifesto-text">
-                        <p>
-                            代表の僕は2年間、月に40名ほどの先輩たち（3・4回生）と面談を重ねてきました。
-                        </p>
-                        <p>
-                            そこで見えてきたのは、「努力不足」では片づけられない苦しさでした。<br><br>
-                            準備不足のまま就活に突入して、選択肢が狭まり焦ってしまう先輩。<br>
-                            悪質な長期インターンに飲まれて、時間も自信も削られてしまう先輩。<br><br>
-                            「もっと早く知っていれば」「誰かに相談できていれば」<br>
-                            その言葉を、何度も聞きました。
-                        </p>
-                        <div class="pl-8 border-l border-black py-4">
-                            <p class="text-black font-medium">
-                                だからこそ僕は、同世代のために何かできないかと思い、この場を作りました。仲間に安心して相談できて、選び直せて、前に進める。誰もが「自分の意思でキャリアを選べる」場所を、ここから広げていきます。
-                            </p>
-                        </div>
-                    </div>
+                    <div class="space-y-10 text-gray-700 leading-loose font-serif text-lg">
+  <p>
+    代表の僕は2年間、月に40名ほどの先輩たち（3・4回生）と面談を重ねてきました。
+  </p>
+
+  <p>
+    そこで見えてきたのは、「努力不足」では片づけられない苦しさでした。<br><br>
+    準備不足のまま就活に突入して、選択肢が狭まり焦ってしまう先輩。<br>
+    悪質な長期インターンに飲まれて、時間も自信も削られてしまう先輩。<br><br>
+    「もっと早く知っていれば」「誰かに相談できていれば」<br>
+    その言葉を、何度も聞きました。<br><br>
+    だからこそ僕は、同世代のために何かできないかと思い<br>
+    この長期インターンの場を作りました。
+  </p>
+
+  <div class="pl-8 border-l border-black py-2">
+    <p class="text-black font-medium">
+      上下関係や理不尽なルールはありません。<br>
+      仲間に安心して相談できて、選び直せて、前に進める。<br>
+      誰もが「自分の意思でキャリアを選べる」場所を、ここから広げていきます。
+    </p>
+  </div>
+</div>
+
                     
                     <div class="mt-16 text-right">
                         <p class="text-[10px] font-en font-bold uppercase tracking-widest text-gray-400">Founders</p>
@@ -309,33 +312,46 @@
     </section>
 
     <!-- Why We Are Different -->
-    <section class="py-24 md:py-48 px-6 bg-white">
+    <section class="py-40 px-6 bg-white">
         <div class="container mx-auto max-w-6xl">
             <div class="text-center mb-32 reveal-text">
-                <div class="v-line mb-10"></div>
-                <h2 class="text-xl font-en font-bold tracking-[0.4em] uppercase">Safety & Trust</h2>
+                <div class="v-line mb-6"></div>
+                <h2 class="text-xl font-en font-bold tracking-widest uppercase">Safety & Trust</h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                <div class="group reveal-text p-10 border border-black/5 hover:border-black/20 transition-all duration-500 bg-light/30">
-                    <span class="font-en text-4xl font-bold text-gray-100 group-hover:text-black transition duration-500 block mb-8">01</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-24">
+                <div class="group reveal-text">
+                    <div class="mb-8 overflow-hidden h-48 img-editorial bg-gray-50">
+                        <i class="fa-regular fa-comments text-3xl opacity-30"></i>
+                    </div>
+                    <span class="font-en text-4xl font-bold text-gray-200 group-hover:text-black transition duration-500 block mb-6">01</span>
                     <h3 class="text-lg font-bold font-serif mb-6 tracking-wide">誰にも負けない就活を。</h3>
                     <p class="text-sm text-gray-600 leading-loose">
-                        ガクチカとして評価される長期インターン。中でも特に評価の高い営業職をピックアップ。実地経験と成果を通じて、就職活動で自信を持って語れる経験が得られます。
+                        ガクチカとして評価される長期インターン。中でも特に評価の高い営業職をピックアップ。<br>
+                        実務経験と成果を通じて、就職活動で自信を持って語れる経験が得られます。
                     </p>
                 </div>
-                <div class="group reveal-text p-10 border border-black/5 hover:border-black/20 transition-all duration-500 bg-light/30" style="transition-delay: 0.1s;">
-                    <span class="font-en text-4xl font-bold text-gray-100 group-hover:text-black transition duration-500 block mb-8">02</span>
+
+                <div class="group reveal-text" style="transition-delay: 0.1s;">
+                    <div class="mb-8 overflow-hidden h-48 img-editorial bg-gray-50">
+                        <i class="fa-regular fa-calendar-check text-3xl opacity-30"></i>
+                    </div>
+                    <span class="font-en text-4xl font-bold text-gray-200 group-hover:text-black transition duration-500 block mb-6">02</span>
                     <h3 class="text-lg font-bold font-serif mb-6 tracking-wide">両立を前提とした設計。</h3>
                     <p class="text-sm text-gray-600 leading-loose">
-                        代表も現役学生です。学業やテストの大変さを熟知しています。長期インターン経験者の代表が、実体験をもとに全力でお助けします！
-                    </p>
+                        代表も現役学生です。学業やテストの大変さ、大学生活の楽しさを熟知しています。悩みがあればいつでも親身に相談に乗ります。<br>
+                        また、代表は長期インターン経験者です。実体験をもとに困ったことがあれば全力でお助けします！
                 </div>
-                <div class="group reveal-text p-10 border border-black/5 hover:border-black/20 transition-all duration-500 bg-light/30" style="transition-delay: 0.2s;">
-                    <span class="font-en text-4xl font-bold text-gray-100 group-hover:text-black transition duration-500 block mb-8">03</span>
+
+                <div class="group reveal-text" style="transition-delay: 0.2s;">
+                    <div class="mb-8 overflow-hidden h-48 img-editorial bg-gray-50">
+                        <i class="fa-solid fa-graduation-cap text-3xl opacity-30"></i>
+                    </div>
+                    <span class="font-en text-4xl font-bold text-gray-200 group-hover:text-black transition duration-500 block mb-6">03</span>
                     <h3 class="text-lg font-bold font-serif mb-6 tracking-wide">プロ監修の本格教育。</h3>
                     <p class="text-sm text-gray-600 leading-loose">
-                        教育研修の一部をプロフェッショナルが監修。社会人基礎力や営業スキルなど、学生のうちから本格的なスキルを身につけることができます。
+                        教育や研修の一部を、営業のプロフェッショナルに監修していただいています。<br>
+                        社会人基礎力やビジネスマナー、営業スキルなど、学生のうちから本格的なスキルを身につけることができます。
                     </p>
                 </div>
             </div>
@@ -343,80 +359,194 @@
     </section>
 
     <!-- Projects -->
-    <section id="projects" class="py-24 md:py-48 px-6 bg-black text-white relative">
+    <section id="projects" class="py-40 px-6 bg-black text-white relative">
         <div class="container mx-auto max-w-6xl">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-24 md:mb-32 border-b border-gray-800 pb-10 reveal-text">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-32 border-b border-gray-800 pb-8 reveal-text">
                 <h2 class="text-5xl md:text-7xl font-en font-bold tracking-tighter">PROJECTS</h2>
-                <p class="text-[10px] font-en uppercase tracking-[0.4em] text-gray-500 mt-6 md:mt-0">Experience Program</p>
+                <p class="text-xs font-en uppercase tracking-widest text-gray-500 mt-4 md:mt-0">Experience Program</p>
             </div>
 
-            <div class="space-y-40 md:space-y-64">
+            <div class="space-y-40">
                 <!-- Project 1 -->
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-24 items-start reveal-text">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-20 items-start reveal-text">
                     <div class="md:col-span-6">
-                        <div class="img-editorial aspect-video w-full bg-gray-900 border border-white/5 rounded-sm grayscale hover:grayscale-0 transition duration-1000">
-                            <img src="./assets/project-tob.jpg" alt="" class="absolute inset-0 w-full h-full object-cover opacity-80" onerror="this.style.display='none';">
-                            <span class="opacity-30 tracking-[0.5em] font-en text-[10px]">Office Work</span>
+                        <div class="img-editorial aspect-video w-full bg-gray-900 border border-gray-800 grayscale hover:grayscale-0 transition duration-700">
+                            <img src="./assets/project-tob.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none';">
+                            <span class="opacity-50 tracking-widest">OFFICE WORK</span>
                         </div>
                     </div>
                     <div class="md:col-span-6">
-                        <div class="mb-8"><span class="px-5 py-2 border border-white/10 rounded-full text-[10px] font-en uppercase tracking-widest bg-white/5">Business</span></div>
-                        <h3 class="text-3xl font-serif font-medium mb-8">法人向け営業 (toB)</h3>
-                        <p class="text-sm text-gray-400 leading-loose mb-10 max-w-md">企業の新規開拓を行う実践的なビジネス体験。最難関のtoB営業に挑むことができます。「テレアポ」「クローザー」「両方」の3段階ステップアップ。</p>
-                        <button onclick="toggleProject('detail-1')" id="btn-detail-1" class="text-xs font-en uppercase tracking-[0.2em] border border-white/20 px-10 py-4 hover:bg-white hover:text-black transition duration-500 rounded-full">View more</button>
-                        
-                        <div id="detail-1" class="project-detail mt-10 text-xs text-gray-400 space-y-6 leading-loose border-t border-gray-800 pt-10">
-                            <p><strong class="text-white block mb-1">【役割（3段階）】</strong>①テレアポ：架電でのアポ獲得 ②クローザー：実地商談で提案・受注 ③テレアポ×クローザー：一気通貫ルート（最速成長）。</p>
-                            <p><strong class="text-white block mb-1">【研修の流れ】</strong>全ポジション共通でオンライン実施。ロープレを丁寧に重ね、代表が最後まで伴走します。</p>
-                            <p><strong class="text-white block mb-1">【報酬（目安）】</strong>テレアポ：時給1,100円〜 / クローザー：完全歩合制 / 両方：時給＋歩合。</p>
-                            <p><strong class="text-white block mb-1">【ステップアップ】</strong>実績に応じてマネージャー側（育成・設計）への挑戦が可能。人を動かす経験をガクチカに。</p>
+                        <div class="mb-6">
+                            <span class="px-4 py-2 border border-white/20 rounded-full text-[10px] font-en uppercase tracking-widest">Business</span>
                         </div>
+                        <h3 class="text-3xl font-serif font-medium mb-6">法人向け営業 (toB)</h3>
+<p class="text-sm text-gray-400 leading-loose mb-8 max-w-md">
+    企業の新規開拓を行う実践的なビジネス体験。<br>
+    学生のうちから最難関のtoB営業に挑むことができます。<br>
+    役割は「テレアポ」「クローザー」「両方」の3段階で、成長に合わせてステップアップ可能です。
+</p>
+<button onclick="toggleProject('detail-1')" id="btn-detail-1" class="text-xs font-en uppercase tracking-widest border border-white/30 px-6 py-3 hover:bg-white hover:text-black transition duration-300">View more</button>
+
+<div id="detail-1" class="project-detail mt-8 text-xs text-gray-400 space-y-4 leading-loose border-t border-gray-800 pt-6">
+    <p>
+        <strong class="text-white block mb-1">【役割（3段階）】</strong>
+        ① テレアポ：法人への架電でアポ獲得を担う「テレアポインター」<br>
+        ② クローザー：最難関と言われるtoBの実地商談で提案・受注まで担う<br>
+        ③ テレアポ × クローザー：アポ獲得から商談まで一気通貫で担当（最速で圧倒的に伸びるルート）
+    </p>
+
+    <p>
+        <strong class="text-white block mb-1">【研修の流れ】</strong>
+        研修は全ポジション共通で、基本はオンラインで実施します（希望があれば実地も可）。<br>
+        ロープレを丁寧に重ね、代表が責任を持って最後まで伴走します。
+    </p>
+
+    <p>
+        <strong class="text-white block mb-1">【稼働の流れ（成長イメージ）】</strong>
+        テレアポは、法人に対して「調整・仮説・改善」を自分で回しながら、営業の土台となる力を磨きます。<br>
+        クローザーは、実地商談を通じて“価値を言語化して伝える力”を鍛え、圧倒的な営業力を身につけます。<br>
+        両方できる人は、アポから受注までを自分で動かし、誰にも負けないtoB能力を獲得できます。
+    </p>
+
+    <p>
+        <strong class="text-white block mb-1">【報酬（目安）】</strong>
+        テレアポ：時給 1,100円〜（スキル・稼働状況により昇給）<br>
+        クローザー：完全歩合制（成果に応じて支給）<br>
+        テレアポ × クローザー：テレアポは時給＋成果に応じた歩合が加算
+    </p>
+
+    <p>
+        <strong class="text-white block mb-1">【評価・ステップアップ（昇格制度）】</strong>
+        学生運営だからこそ、成長した人には「プレイヤーで終わらない」チャンスがあります。<br>
+        実績や姿勢に応じて、後輩育成・チーム設計などを担うマネージャー側へ挑戦可能。<br>
+        人を動かす経験まで積めることで、就活でも社会でも通用する力が一段上がります。
+    </p>
+
+    <p>
+        <strong class="text-white block mb-1">【サポート】</strong>
+        実務面は提携企業のプロが監修し、就活時のES添削・面接対策なども継続的に支援します。<br>
+        「実務スキル」と「就活成果」の両面で伸ばす設計です。
+    </p>
+</div>
+
                     </div>
                 </div>
 
                 <!-- Project 2 -->
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-24 items-start reveal-text">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-20 items-start reveal-text">
                     <div class="md:col-span-6 md:order-2">
-                        <div class="img-editorial aspect-video w-full bg-gray-900 border border-white/5 rounded-sm grayscale hover:grayscale-0 transition duration-1000">
-                            <img src="./assets/project-saiji.jpg" alt="" class="absolute inset-0 w-full h-full object-cover opacity-80" onerror="this.style.display='none';">
-                            <span class="opacity-30 tracking-[0.5em] font-en text-[10px]">Event Booth</span>
+                        <div class="img-editorial aspect-video w-full bg-gray-900 border border-gray-800 grayscale hover:grayscale-0 transition duration-700">
+                            <img src="./assets/project-saiji.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none';">
+                            <span class="opacity-50 tracking-widest">EVENT BOOTH</span>
                         </div>
                     </div>
-                    <div class="md:col-span-6 md:order-1 flex flex-col items-start md:items-end md:text-right">
-                        <div class="mb-8"><span class="px-5 py-2 border border-white/10 rounded-full text-[10px] font-en uppercase tracking-widest bg-white/5">Team Work</span></div>
-                        <h3 class="text-3xl font-serif font-medium mb-8">催事営業</h3>
-                        <p class="text-sm text-gray-400 leading-loose mb-10 max-w-md ml-auto">ショッピングモール等のブースで行う対面営業。営業未経験・話すのが苦手な方でも始めやすく、基礎から段階的に習得できます。</p>
-                        <button onclick="toggleProject('detail-2')" id="btn-detail-2" class="text-xs font-en uppercase tracking-[0.2em] border border-white/20 px-10 py-4 hover:bg-white hover:text-black transition duration-500 rounded-full">View more</button>
-                        
-                        <div id="detail-2" class="project-detail mt-10 text-xs text-gray-400 space-y-6 leading-loose border-t border-gray-800 pt-10 text-left md:text-right">
-                            <p><strong class="text-white block mb-1">【役割（2段階）】</strong>①アポインター：声かけ・ご案内 ②クローザー：提案〜契約まで（評価により昇格）。</p>
-                            <p><strong class="text-white block mb-1">【稼働の流れ】</strong>大型施設の携帯販売ブース等で実践。まずは基礎を固め、評価に応じてクローザーへ進みます。</p>
-                            <p><strong class="text-white block mb-1">【報酬（目安）】</strong>アポインター：時給1,600円〜 / クローザー：時給2,000円〜。</p>
-                            <p><strong class="text-white block mb-1">【サポート】</strong>プロ監修の研修に加え、学業やメンタルの相談は代表が直接対応。試験休みも推奨しています。</p>
+                    <div class="md:col-span-6 md:order-1 text-left md:text-right">
+                        <div class="mb-6 flex justify-start md:justify-end">
+                            <span class="px-4 py-2 border border-white/20 rounded-full text-[10px] font-en uppercase tracking-widest">Team Work</span>
                         </div>
+                        <h3 class="text-3xl font-serif font-medium mb-6">催事営業</h3>
+<p class="text-sm text-gray-400 leading-loose mb-8 ml-auto max-w-md">
+    ショッピングモール等の催事ブースで行う、対面営業の実践プログラム。<br>
+    営業未経験・話すのが苦手な方でも始めやすく、基礎から段階的にステップアップできます！
+</p>
+<button onclick="toggleProject('detail-2')" id="btn-detail-2" class="text-xs font-en uppercase tracking-widest border border-white/30 px-6 py-3 hover:bg-white hover:text-black transition duration-300">View more</button>
+
+<div id="detail-2" class="project-detail mt-8 text-xs text-gray-400 space-y-4 leading-loose border-t border-gray-800 pt-6 text-left md:text-right">
+    <p>
+        <strong class="text-white block mb-1">【役割（2段階）】</strong>
+        ① アポインター：声かけ・ご案内など、営業の基礎能力を身につけるのに最適なポジションです。<br>
+        ② クローザー：提案〜契約までを担い、対面営業の最重要スキルを実戦で磨くポジションです。ガクチカとしても非常に評価されます。
+    </p>
+
+    <p>
+        <strong class="text-white block mb-1">【研修フロー】</strong>
+        研修は全ポジション共通で、基本はオンラインで実施します（希望があれば実地も可）。<br>
+        ロープレを丁寧に重ね、代表が責任を持って最後まで伴走します。
+    </p>
+
+    <p>
+        <strong class="text-white block mb-1">【稼働の流れ（実地）】</strong>
+        大型ショッピングモール等の施設にて、携帯販売ブースで提案・ご案内を行います。<br>
+        まずはアポインターとして「声かけ・ヒアリング・説明」の基礎を固め、<br>
+        評価に応じてクローザーへステップアップします。<br>
+        クローザーでは契約の進め方まで実戦で学べるため、就活でも語れる価値が高い経験になります。
+    </p>
+
+    <p>
+        <strong class="text-white block mb-1">【報酬（目安）】</strong>
+        アポインター：時給 1,600円〜<br>
+        クローザー：時給 2,000円〜
+    </p>
+
+    <p>
+        <strong class="text-white block mb-1">【評価・ステップアップ（昇格制度）】</strong>
+        学生運営だからこそ、成長した人には「プレイヤーで終わらない」チャンスがあります。<br>
+        実績や姿勢に応じて、後輩育成・チーム設計などを担うマネージャー側へ挑戦可能。<br>
+        人を動かす経験まで積めることで、就活でも社会でも通用する力が一段上がります。
+    </p>
+
+    <p>
+        <strong class="text-white block mb-1">【サポート】</strong>
+        実務面は提携企業のプロが監修。加えて、学業やメンタル面の相談は代表が直接サポートします。<br>
+        「成果」と「成長」を両立できるよう、運営が継続的に支援します。
+    </p>
+</div>
+
                     </div>
                 </div>
 
                 <!-- Project 3 -->
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-24 items-start reveal-text">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-20 items-start reveal-text">
                     <div class="md:col-span-6">
-                        <div class="img-editorial aspect-video w-full bg-gray-900 border border-white/5 rounded-sm grayscale hover:grayscale-0 transition duration-1000">
-                            <img src="./assets/project-houhan.jpg" alt="" class="absolute inset-0 w-full h-full object-cover opacity-80" onerror="this.style.display='none';">
-                            <span class="opacity-30 tracking-[0.5em] font-en text-[10px]">Field Sales</span>
+                        <div class="img-editorial aspect-video w-full bg-gray-900 border border-gray-800 grayscale hover:grayscale-0 transition duration-700">
+                            <img src="./assets/project-houhan.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none';">
+                            <span class="opacity-50 tracking-widest">FIELD SALES</span>
                         </div>
                     </div>
                     <div class="md:col-span-6">
-                        <div class="mb-8"><span class="px-5 py-2 border border-white/10 rounded-full text-[10px] font-en uppercase tracking-widest bg-white/5">Growth</span></div>
-                        <h3 class="text-3xl font-serif font-medium mb-8">訪問販売</h3>
-                        <p class="text-sm text-gray-400 leading-loose mb-10 max-w-md">個人宅訪問を通じ、圧倒的な行動力と営業力を習得。体力に自信がある人、就活最強のガクチカを作りたい方に最適です。</p>
-                        <button onclick="toggleProject('detail-3')" id="btn-detail-3" class="text-xs font-en uppercase tracking-[0.2em] border border-white/20 px-10 py-4 hover:bg-white hover:text-black transition duration-500 rounded-full">View more</button>
-                        
-                        <div id="detail-3" class="project-detail mt-10 text-xs text-gray-400 space-y-6 leading-loose border-t border-gray-800 pt-10">
-                            <p><strong class="text-white block mb-1">【研修・稼働】</strong>プロによるオンライン研修後、実地では同行研修。一人立ちできるまで絶対に放置しません。</p>
-                            <p><strong class="text-white block mb-1">【稼働の流れ】</strong>現場での動き・声かけ・切り返しを先輩と一緒に身につけます。経験量を積んで自分の型を構築します。</p>
-                            <p><strong class="text-white block mb-1">【報酬】</strong>完全歩合制（成果に応じてダイレクトに報酬が決まります）。</p>
-                            <p><strong class="text-white block mb-1">【サポート】</strong>現場でのメンタルサポートまで代表が伴走。「成長」と「成果」を両立できるよう継続支援します。</p>
+                        <div class="mb-6">
+                            <span class="px-4 py-2 border border-white/20 rounded-full text-[10px] font-en uppercase tracking-widest">Growth</span>
                         </div>
+                        <h3 class="text-3xl font-serif font-medium mb-6">訪問販売</h3>
+<p class="text-sm text-gray-400 leading-loose mb-8 max-w-md">
+    個人宅への訪問を通じて、圧倒的な行動力と営業力を身につける実戦プログラム。<br>
+    体力に自信がある人には特におすすめで、就活でも高く評価される経験が得られます。
+</p>
+<button onclick="toggleProject('detail-3')" id="btn-detail-3" class="text-xs font-en uppercase tracking-widest border border-white/30 px-6 py-3 hover:bg-white hover:text-black transition duration-300">View more</button>
+
+<div id="detail-3" class="project-detail mt-8 text-xs text-gray-400 space-y-4 leading-loose border-t border-gray-800 pt-6">
+    <p>
+        <strong class="text-white block mb-1">【研修フロー】</strong>
+        提携企業のプロによるオンライン研修を実施し、ロープレで練習を重ねます。<br>
+        基礎を固めた上で、実地では「同行」を通じて成功する伝え方を体感します。
+    </p>
+
+    <p>
+        <strong class="text-white block mb-1">【稼働の流れ（実地）】</strong>
+        最初は代表や先輩が必ず伴走し、現場での動き方・声のかけ方・切り返しまで一緒に身につけます。<br>
+        “一人立ち”できる状態になるまでは絶対に放置しません。安心して挑戦していただけます！<br>
+        そこからは各自で行動しながら、経験量を積んで自分の型を作っていきます。
+    </p>
+
+    <p>
+        <strong class="text-white block mb-1">【報酬】</strong>
+        完全歩合制（成果に応じて報酬が決まります。）
+    </p>
+
+    <p>
+        <strong class="text-white block mb-1">【評価・ステップアップ（昇格制度）】</strong>
+        学生運営だからこそ、成長した人には「プレイヤーで終わらない」チャンスがあります。<br>
+        実績や姿勢に応じて、後輩育成・チーム設計などを担うマネージャー側へ挑戦可能。<br>
+        人を動かす経験まで積めることで、就活でも社会でも通用する力が一段上がります。
+    </p>
+
+    <p>
+        <strong class="text-white block mb-1">【サポート】</strong>
+        実務スキルは提携企業のプロが監修. 加えて、代表が現場・メンタル面まで責任を持って伴走します。<br>
+        「成果」と「成長」を両立できるよう、運営が継続的に支援します。
+    </p>
+</div>
+
                     </div>
                 </div>
             </div>
@@ -424,119 +554,133 @@
     </section>
 
     <!-- Visual Break -->
-    <section class="h-[60vh] md:h-[80vh] bg-gray-100 flex items-center justify-center relative overflow-hidden">
-        <div class="absolute inset-0 img-editorial grayscale opacity-60">
+    <section class="h-[60vh] bg-gray-100 flex items-center justify-center relative overflow-hidden">
+        <div class="absolute inset-0 img-editorial grayscale opacity-50">
             <img src="./assets/team-lifestyle.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none';">
-            <span class="text-2xl tracking-[0.6em] text-black font-serif italic">Collective Mindset</span>
+            <span class="text-2xl tracking-[0.5em] text-black">TEAM LIFESTYLE PHOTO</span>
         </div>
     </section>
 
     <!-- Team -->
-    <section id="team" class="py-24 md:py-48 px-6 bg-light">
+    <section id="team" class="py-40 px-6 bg-light">
         <div class="container mx-auto max-w-6xl">
-            <div class="mb-24 flex items-baseline justify-between reveal-text border-b border-black/10 pb-10">
-                <h2 class="text-4xl md:text-6xl font-en font-bold tracking-tighter">THE TEAM</h2>
-                <p class="text-xs font-serif text-gray-500 tracking-widest">運営メンバー</p>
+            <div class="mb-24 flex items-baseline justify-between reveal-text">
+                <h2 class="text-4xl md:text-5xl font-en font-bold tracking-tighter">THE TEAM</h2>
+                <p class="text-xs font-serif text-gray-500 tracking-wide">運営メンバー</p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-16 md:gap-24">
+            <div class="grid md:grid-cols-2 gap-16 lg:gap-24">
                 <div class="group reveal-text">
-                    <div class="img-editorial aspect-[3/4] w-full bg-gray-200 grayscale group-hover:grayscale-0 transition duration-1000 mb-10 rounded-sm shadow-2xl">
+                    <div class="img-editorial aspect-[3/4] w-full bg-gray-200 grayscale group-hover:grayscale-0 transition duration-700 mb-8">
                         <img src="./assets/member-shingai.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none';">
                         PORTRAIT
                     </div>
-                    <div class="flex justify-between items-start border-t border-black/10 pt-8">
+                    <div class="flex justify-between items-start border-t border-gray-300 pt-6">
                         <div>
-                            <h3 class="text-2xl font-medium font-serif tracking-wide">新谷 壮太郎</h3>
-                            <p class="text-[11px] text-gray-500 mt-3 tracking-[0.2em] font-en uppercase">2005.05.17 / 龍谷大学 先端理工学部 / Representative</p>
+                            <h3 class="text-xl font-medium font-serif tracking-wide">新谷 壮太郎</h3>
+                            <p class="text-xs text-gray-500 mt-2 tracking-widest font-en">2005.05.17 / 龍谷大学 先端理工学部 / Representative</p>
                         </div>
+                        <span class="text-[10px] font-en uppercase tracking-widest border border-black px-3 py-1">Student</span>
                     </div>
-                    <p class="text-sm text-gray-600 mt-8 leading-loose font-serif max-w-sm">
+                    <p class="text-sm text-gray-600 mt-6 leading-loose font-serif max-w-sm">
                         現役の理系学生。学業と活動の両立を自ら体現しながら、メンバーひとりひとりの「安心できる挑戦」をサポートしています。
                     </p>
                 </div>
 
                 <div class="group reveal-text" style="transition-delay: 0.1s;">
-                    <div class="img-editorial aspect-[3/4] w-full bg-gray-200 grayscale group-hover:grayscale-0 transition duration-1000 mb-10 rounded-sm shadow-2xl">
+                    <div class="img-editorial aspect-[3/4] w-full bg-gray-200 grayscale group-hover:grayscale-0 transition duration-700 mb-8">
                         <img src="./assets/member-morihira.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none';">
                         PORTRAIT
                     </div>
-                    <div class="flex justify-between items-start border-t border-black/10 pt-8">
+                    <div class="flex justify-between items-start border-t border-gray-300 pt-6">
                         <div>
-                            <h3 class="text-2xl font-medium font-serif tracking-wide">森平 心</h3>
-                            <p class="text-[11px] text-gray-500 mt-3 tracking-[0.2em] font-en uppercase">2005.04.24 / 立命館大学 産業社会学部 / Organizer</p>
+                            <h3 class="text-xl font-medium font-serif tracking-wide">森平 心</h3>
+                            <p class="text-xs text-gray-500 mt-2 tracking-widest font-en">2005.04.24 / 立命館大学 産業社会学部 / Organizer</p>
                         </div>
+                        <span class="text-[10px] font-en uppercase tracking-widest border border-black px-3 py-1">Student</span>
                     </div>
-                    <p class="text-sm text-gray-600 mt-8 leading-loose font-serif max-w-sm">
+                    <p class="text-sm text-gray-600 mt-6 leading-loose font-serif max-w-sm">
                         滋賀から高知へ野球留学し、甲子園へ。野球で培った熱量を、今は「学生が輝ける環境づくり」に注いでいます。
                     </p>
                 </div>
             </div>
 
-            <div class="mt-48 pt-16 border-t border-black/10 text-center reveal-text">
-                <p class="text-[10px] font-en font-bold uppercase tracking-[0.4em] text-gray-400 mb-12">Supported by Professionals</p>
+            <!-- Partner Section -->
+            <div class="mt-48 pt-12 border-t border-gray-300 text-center reveal-text">
+                <p class="text-[10px] font-en font-bold uppercase tracking-[0.2em] text-gray-400 mb-10">Supported by Professionals</p>
                 <div class="flex flex-col items-center">
-                    <div class="mb-10 p-6 bg-white shadow-sm inline-block rounded-sm border border-black/5">
-                        <img src="./assets/partner-bluebu.png" alt="株式会社BLOOVE" class="h-10 md:h-14 w-auto object-contain grayscale hover:grayscale-0 transition duration-700" onerror="this.style.display='none';">
+                    <div class="mb-6 px-8 py-4 bg-white inline-block">
+                        <img src="./assets/partner-bluebu.png" alt="株式会社ブルーブ" class="h-12 md:h-16 w-auto object-contain grayscale hover:grayscale-0 transition duration-700" onerror="this.style.display='none';">
                     </div>
-                    <h3 class="text-lg font-medium font-serif mb-4 tracking-[0.2em]">株式会社BLOOVE 様</h3>
-                    <p class="text-[11px] text-gray-500 leading-loose tracking-[0.3em] uppercase font-en border-b border-black/5 pb-6 mb-6">Education Partner / Feedback Support</p>
-                    <p class="text-xs text-gray-400 font-serif italic">原田さん / 手塚さん / 横山さん / 伊藤さん</p>
+                    <h3 class="text-base font-medium font-serif mb-2 tracking-widest">株式会社BLOOVE 様</h3>
+                    <p class="text-[11px] text-gray-500 leading-loose tracking-widest uppercase font-en">
+                        EDUCATION PARTNER / FEEDBACK SUPPORT
+                    </p>
+                    <p class="text-xs text-gray-400 mt-4 leading-relaxed font-serif">
+                        原田さん / 手塚さん / 横山さん / 伊藤さん
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- FAQ & Contact -->
-    <section id="contact" class="py-24 md:py-48 px-6 bg-white">
-        <div class="container mx-auto max-w-4xl">
-            <h2 class="text-4xl md:text-6xl font-en font-bold tracking-tighter mb-24 text-center reveal-text">Q&A / CONTACT</h2>
+    <section id="contact" class="py-40 px-6 bg-white">
+        <div class="container mx-auto max-w-3xl">
+            <h2 class="text-4xl font-en font-bold tracking-tighter mb-24 text-center reveal-text">Q&A / CONTACT</h2>
 
             <div class="space-y-6 mb-32 reveal-text">
-                <div class="border-t border-black/5 py-10 group hover:bg-light transition duration-500 px-6">
-                    <h3 class="font-bold text-sm md:text-base mb-4 font-serif tracking-wide">Q. 学業との両立は本当にできますか？</h3>
-                    <p class="text-sm text-gray-500 leading-loose">もちろんです！運営も学生ですので、テスト期間の重要性は十分に理解しています。シフト調整もこちらから推奨させていただいております。</p>
+                <div class="border-t border-gray-200 py-8 group hover:bg-light transition duration-500">
+                    <h3 class="font-bold text-sm mb-4 font-serif tracking-wide">Q. 学業との両立は本当にできますか？</h3>
+                    <p class="text-xs text-gray-500 leading-loose">もちろんです！運営も学生ですので、テスト期間の重要性は十分に理解しています。テスト期間などはみなさんシフトの調整をこちらからも推奨させていただいております！</p>
                 </div>
-                <div class="border-t border-black/5 py-10 group hover:bg-light transition duration-500 px-6">
-                    <h3 class="font-bold text-sm md:text-base mb-4 font-serif tracking-wide">Q. 何か費用はかかりますか？</h3>
-                    <p class="text-sm text-gray-500 leading-loose">参加費などの費用は一切かかりません。みんなが安心して絶対に成長できる場を作ることが目的です！</p>
+                <div class="border-t border-gray-200 py-8 group hover:bg-light transition duration-500">
+                    <h3 class="font-bold text-sm mb-4 font-serif tracking-wide">Q. 何か費用はかかりますか？</h3>
+                    <p class="text-xs text-gray-500 leading-loose">参加費などの費用は一切かかりません。みんなが安心して絶対的に成長できる場を作ることが我々の目的です！</p>
                 </div>
-                <div class="border-t border-b border-black/5 py-10 group hover:bg-light transition duration-500 px-6">
-                    <h3 class="font-bold text-sm md:text-base mb-4 font-serif tracking-wide">Q. 相談したい場合はどうすればいいですか？</h3>
-                    <p class="text-sm text-gray-500 leading-loose">資料提供や相談の時間を用意しています。instagramや下記のLINEよりご連絡をいただけますと代表が対応させていただきます！</p>
+                <div class="border-t border-b border-gray-200 py-8 group hover:bg-light transition duration-500">
+                    <h3 class="font-bold text-sm mb-4 font-serif tracking-wide">Q. 相談したい場合はどうすればいいですか？</h3>
+                    <p class="text-xs text-gray-500 leading-loose">まずは概要を理解していただくための資料や相談の時間を用意しています. instagramのDMや、下記のラインよりご連絡をいただけますと代表が対応させていただきます！</p>
                 </div>
             </div>
 
             <div class="text-center reveal-text">
-                <p class="font-serif text-lg md:text-2xl mb-16 leading-loose px-4">
-                    「就活が不安」「何をしたらいいかわからない。」<br class="hidden md:block">
+                <p class="font-serif text-lg mb-12 leading-loose">
+                    「就活が不安」「何をしたらいいかわからない。」<br>
                     そんなみなさんのお力に少しでもなることが、僕の夢です！<br>
-                    <span class="text-gray-400 text-sm block mt-6 tracking-[0.2em]">一緒に、自分の将来を描ける学生生活を送りましょう！</span>
+                    <span class="text-gray-400 text-sm block mt-4 tracking-widest">一緒に、自分の将来を描ける学生生活を送りましょう！</span>
                 </p>
                 
-                <div class="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-24 pt-16 border-t border-black/5">
+                <!-- Contact Links -->
+                <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 pt-8 border-t border-gray-100">
                     <div class="text-center">
-                        <p class="text-[10px] font-en font-bold text-gray-400 uppercase tracking-[0.3em] mb-4">Official Line</p>
-                        <a href="https://line.me/ti/p/MJPjjbhkaO" target="_blank" rel="noopener" class="font-serif text-lg md:text-xl border-b-2 border-black pb-2 hover:opacity-60 transition duration-500 inline-block">代表のLINEで相談</a>
+                        <p class="text-[10px] font-en font-bold text-gray-400 uppercase tracking-widest mb-3">Line Messenger</p>
+                        <a href="https://line.me/ti/p/MJPjjbhkaO" target="_blank" rel="noopener" class="contact-link-hover font-serif text-sm border-b border-black pb-1 transition duration-300">
+                            代表のLINEで相談
+                        </a>
                     </div>
                     <div class="text-center">
-                        <p class="text-[10px] font-en font-bold text-gray-400 uppercase tracking-[0.3em] mb-4">Email Inquiry</p>
-                        <a href="mailto:sotaro50017@gmail.com" class="font-serif text-lg md:text-xl border-b-2 border-black pb-2 hover:opacity-60 transition duration-500 inline-block">メールで相談</a>
+                        <p class="text-[10px] font-en font-bold text-gray-400 uppercase tracking-widest mb-3">Email Inquiry</p>
+                        <a href="mailto:sotaro50017@gmail.com" class="contact-link-hover font-serif text-sm border-b border-black pb-1 transition duration-300">
+                            メールで相談
+                        </a>
                     </div>
                 </div>
-                <p class="text-[10px] text-gray-400 mt-16 font-en tracking-[0.5em] uppercase italic">/ Contact us freely /</p>
+                <p class="text-[10px] text-gray-400 mt-12 font-en tracking-[0.2em] uppercase">Contact (気軽にご連絡ください！)</p>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-light py-20 px-6 border-t border-black/5">
-        <div class="container mx-auto max-w-6xl flex flex-col md:flex-row justify-between items-center md:items-end gap-12">
-            <div class="text-center md:text-left">
-                <div class="font-en font-bold text-3xl tracking-tighter mb-4 org-name-insert"></div>
-                <p class="text-[10px] font-en uppercase tracking-[0.4em] text-gray-400">Student Operated Collective</p>
+    <footer class="bg-light py-16 px-6 border-t border-gray-200">
+        <div class="container mx-auto max-w-6xl flex flex-col md:flex-row justify-between items-end gap-8">
+            <div>
+                <div class="font-en font-bold text-2xl tracking-tighter mb-4 org-name-insert"></div>
+                <p class="text-[10px] font-en uppercase tracking-widest text-gray-400">Student Operated Collective</p>
             </div>
-            <div class="text-[10px] font-en uppercase tracking-[0.3em] text-gray-500/50">&copy; <span class="org-name-insert"></span> All Rights Reserved.</div>
+            <div class="text-[10px] font-en uppercase tracking-widest text-gray-400">
+                &copy; <span class="org-name-insert"></span> All Rights Reserved.
+            </div>
         </div>
     </footer>
 
@@ -544,8 +688,11 @@
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                const targetElement = document.querySelector(this.getAttribute('href'));
-                if (targetElement) { targetElement.scrollIntoView({ behavior: 'smooth' }); }
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                document.querySelector(targetId).scrollIntoView({
+                    behavior: 'smooth'
+                });
             });
         });
     </script>
